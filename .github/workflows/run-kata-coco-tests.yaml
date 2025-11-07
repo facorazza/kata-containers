@@ -145,7 +145,7 @@ jobs:
         run: bash tests/integration/kubernetes/gha-run.sh delete-csi-driver
 
       - name: Extract failed tests and notify Slack
-        if: failure() && matrix.runner == 'sev-snp'
+        if: always() && matrix.runner == 'sev-snp'
         env:
           PR_NUMBER: ${{ inputs.pr-number }}
           GITHUB_SERVER: ${{ github.server_url }}
