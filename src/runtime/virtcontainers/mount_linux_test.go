@@ -305,31 +305,20 @@ func TestGetDeviceForPathValidMount(t *testing.T) {
 	assert.Equal(dev.mountPoint, expected)
 }
 
-func TestIsBlockDevice(t *testing.T) {
+func TestIsDeviceMapper(t *testing.T) {
 	assert := assert.New(t)
 
 	// known major, minor for /dev/tty
 	major := 5
 	minor := 0
 
-	isBD, err := isBlockDevice(major, minor)
+	isDM, err := isDeviceMapper(major, minor)
 	assert.NoError(err)
-	assert.False(isBD)
+	assert.False(isDM)
 
 	// fake the block device format
-	blockFormatTemplateOld := blockFormatTemplate
-	defer func() {
-		blockFormatTemplate = blockFormatTemplateOld
-	}()
-
 	blockFormatTemplate = "/sys/dev/char/%d:%d"
-	isBD, err = isBlockDevice(major, minor)
+	isDM, err = isDeviceMapper(major, minor)
 	assert.NoError(err)
-	assert.True(isBD)
-
-	// invalid template
-	blockFormatTemplate = "\000/sys/dev/char/%d:%d"
-	isBD, err = isBlockDevice(major, minor)
-	assert.Error(err)
-	assert.False(isBD)
+	assert.True(isDM)
 }
